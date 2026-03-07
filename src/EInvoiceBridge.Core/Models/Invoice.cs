@@ -1,0 +1,18 @@
+namespace EInvoiceBridge.Core.Models;
+
+public sealed class Invoice
+{
+    public Guid Id { get; set; }
+    public string InvoiceNumber { get; set; } = string.Empty;
+    public DateOnly IssueDate { get; set; }
+    public DateOnly DueDate { get; set; }
+    public string InvoiceTypeCode { get; set; } = "380";
+    public string CurrencyCode { get; set; } = "EUR";
+    public string BuyerReference { get; set; } = string.Empty;
+    public Party Seller { get; set; } = new();
+    public Party Buyer { get; set; } = new();
+    public PaymentMeans PaymentMeans { get; set; } = new();
+    public List<InvoiceLine> Lines { get; set; } = [];
+    public string? TaxExemptionReason { get; set; }
+    public string? Notes { get; set; }
+}

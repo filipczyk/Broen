@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" />
+    <PackageReference Include="Serilog.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EInvoiceBridge.Application\EInvoiceBridge.Application.csproj" />
+    <ProjectReference Include="..\EInvoiceBridge.Core\EInvoiceBridge.Core.csproj" />
+    <ProjectReference Include="..\EInvoiceBridge.Validation\EInvoiceBridge.Validation.csproj" />
+    <ProjectReference Include="..\EInvoiceBridge.Transformation\EInvoiceBridge.Transformation.csproj" />
+    <ProjectReference Include="..\EInvoiceBridge.Delivery\EInvoiceBridge.Delivery.csproj" />
+    <ProjectReference Include="..\EInvoiceBridge.Persistence\EInvoiceBridge.Persistence.csproj" />
+    <ProjectReference Include="..\EInvoiceBridge.Infrastructure\EInvoiceBridge.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

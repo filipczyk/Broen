@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EInvoiceBridge.Core\EInvoiceBridge.Core.csproj" />
+    <ProjectReference Include="..\..\src\EInvoiceBridge.Application\EInvoiceBridge.Application.csproj" />
+    <ProjectReference Include="..\..\src\EInvoiceBridge.Validation\EInvoiceBridge.Validation.csproj" />
+    <ProjectReference Include="..\..\src\EInvoiceBridge.Transformation\EInvoiceBridge.Transformation.csproj" />
+    <ProjectReference Include="..\..\src\EInvoiceBridge.Delivery\EInvoiceBridge.Delivery.csproj" />
+  </ItemGroup>
+
+</Project>
