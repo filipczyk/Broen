@@ -36,7 +36,9 @@ public static class InvoiceMappingProfile
                 TaxPercent = l.TaxPercent
             }).ToList(),
             TaxExemptionReason = request.TaxExemptionReason,
-            Notes = request.Notes
+            Notes = request.Notes,
+            DeliveryDate = request.DeliveryDate is not null ? DateOnly.Parse(request.DeliveryDate) : null,
+            DeliveryCountryCode = request.DeliveryCountryCode
         };
     }
 

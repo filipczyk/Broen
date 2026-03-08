@@ -1,0 +1,70 @@
+{
+  "invoiceNumber": "INV-2026-0847",
+  "issueDate": "2026-03-08",
+  "dueDate": "2026-04-07",
+  "invoiceTypeCode": "380",
+  "currencyCode": "EUR",
+  "buyerReference": "PO-2026-1234",
+  "deliveryDate": "2026-03-08",
+  "deliveryCountryCode": "DE",
+  "seller": {
+    "name": "Van Houten Industrial BV",
+    "vatNumber": "BE0123456789",
+    "address": {
+      "street": "Industrielaan 42",
+      "city": "Ghent",
+      "postalCode": "9000",
+      "countryCode": "BE"
+    },
+    "contact": {
+      "name": "Ingrid Peeters",
+      "email": "ingrid@vanhouten.be",
+      "phone": "+32 9 123 45 67"
+    }
+  },
+  "buyer": {
+    "name": "Müller GmbH",
+    "vatNumber": "DE123456789",
+    "address": {
+      "street": "Hauptstraße 15",
+      "city": "Stuttgart",
+      "postalCode": "70173",
+      "countryCode": "DE"
+    }
+  },
+  "paymentMeans": {
+    "code": "30",
+    "iban": "BE68539007547034",
+    "bic": "BBRUBEBB"
+  },
+  "lines": [
+    {
+      "lineNumber": 1,
+      "description": "Hydraulic fitting HF-2240",
+      "quantity": 500,
+      "unitCode": "C62",
+      "unitPrice": 22.50,
+      "discount": {
+        "amount": 562.50,
+        "reason": "Volume discount 5%"
+      },
+      "taxCategoryCode": "K",
+      "taxPercent": 0
+    },
+    {
+      "lineNumber": 2,
+      "description": "Hydraulic fitting HF-3100",
+      "quantity": 100,
+      "unitCode": "C62",
+      "unitPrice": 13.50,
+      "discount": {
+        "amount": 67.50,
+        "reason": "Volume discount 5%"
+      },
+      "taxCategoryCode": "K",
+      "taxPercent": 0
+    }
+  ],
+  "taxExemptionReason": "Intra-community supply — Article 138 Council Directive 2006/112/EC",
+  "notes": "Delivery ref: DEL-2026-0412"
+}

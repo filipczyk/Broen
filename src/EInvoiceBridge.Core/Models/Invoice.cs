@@ -15,4 +15,16 @@ public sealed class Invoice
     public List<InvoiceLine> Lines { get; set; } = [];
     public string? TaxExemptionReason { get; set; }
     public string? Notes { get; set; }
+    public DateOnly? DeliveryDate { get; set; }
+    public string? DeliveryCountryCode { get; set; }
+
+    // DB-mapped fields
+    public string Status { get; set; } = string.Empty;
+    public string? RawJson { get; set; }
+    public string? GeneratedXml { get; set; }
+    public string? ValidationResult { get; set; }
+    public string? StorecoveSubmissionId { get; set; }
+    public Guid? FormatVersionId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

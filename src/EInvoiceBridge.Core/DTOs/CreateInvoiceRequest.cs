@@ -16,6 +16,8 @@ public sealed class CreateInvoiceRequest
     public List<InvoiceLineDto> Lines { get; set; } = [];
     public string? TaxExemptionReason { get; set; }
     public string? Notes { get; set; }
+    public string? DeliveryDate { get; set; }
+    public string? DeliveryCountryCode { get; set; }
 }
 
 public sealed class PartyDto

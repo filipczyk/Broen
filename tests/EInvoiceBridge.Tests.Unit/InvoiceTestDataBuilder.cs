@@ -76,7 +76,9 @@ public static class InvoiceTestDataBuilder
                 }
             ],
             TaxExemptionReason = "Intra-community supply — Article 138 Council Directive 2006/112/EC",
-            Notes = "Delivery ref: DEL-2026-0412"
+            Notes = "Delivery ref: DEL-2026-0412",
+            DeliveryDate = new DateOnly(2026, 3, 8),
+            DeliveryCountryCode = "DE"
         };
     }
 }
