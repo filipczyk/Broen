@@ -7,16 +7,23 @@ namespace EInvoiceBridge.Application.Queries.GetInvoiceStatus;
 public sealed class GetInvoiceStatusQueryHandler : IRequestHandler<GetInvoiceStatusQuery, InvoiceStatusResponse?>
 {
     private readonly IInvoiceRepository _invoiceRepository;
-    private readonly IAuditRepository _auditRepository;
 
-    public GetInvoiceStatusQueryHandler(IInvoiceRepository invoiceRepository, IAuditRepository auditRepository)
+    public GetInvoiceStatusQueryHandler(IInvoiceRepository invoiceRepository)
     {
         _invoiceRepository = invoiceRepository;
-        _auditRepository = auditRepository;
     }
 
     public async Task<InvoiceStatusResponse?> Handle(GetInvoiceStatusQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var invoice = await _invoiceRepository.GetByIdAsync(request.InvoiceId, cancellationToken);
+        if (invoice is null)
+            return null;
+
+        return new InvoiceStatusResponse
+        {
+            Id = invoice.Id,
+            Status = invoice.Status,
+            UpdatedAt = invoice.UpdatedAt
+        };
     }
 }

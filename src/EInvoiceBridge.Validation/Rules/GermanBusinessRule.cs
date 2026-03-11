@@ -1,4 +1,5 @@
 using EInvoiceBridge.Core.DTOs;
+using EInvoiceBridge.Core.Enums;
 using EInvoiceBridge.Core.Interfaces;
 using EInvoiceBridge.Core.Models;
 
@@ -11,6 +12,20 @@ public sealed class GermanBusinessRule : IValidationRule
 
     public Task<IReadOnlyList<ValidationErrorDto>> ValidateAsync(Invoice invoice, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var errors = new List<ValidationErrorDto>();
+
+        if (invoice.Buyer.Address.CountryCode.Equals("DE", StringComparison.OrdinalIgnoreCase)
+            && string.IsNullOrWhiteSpace(invoice.BuyerReference))
+        {
+            errors.Add(new ValidationErrorDto
+            {
+                RuleId = RuleId,
+                Severity = ValidationSeverity.Error,
+                Field = "BuyerReference",
+                Message = "BuyerReference (BT-10) is mandatory for XRechnung when buyer is in Germany."
+            });
+        }
+
+        return Task.FromResult<IReadOnlyList<ValidationErrorDto>>(errors);
     }
 }

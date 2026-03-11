@@ -1,3 +1,4 @@
+using System.Text.Json;
 using EInvoiceBridge.Core.DTOs;
 using EInvoiceBridge.Core.Interfaces;
 using MediatR;
@@ -15,6 +16,24 @@ public sealed class GetInvoiceQueryHandler : IRequestHandler<GetInvoiceQuery, In
 
     public async Task<InvoiceResponse?> Handle(GetInvoiceQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var invoice = await _invoiceRepository.GetByIdAsync(request.InvoiceId, cancellationToken);
+        if (invoice is null)
+            return null;
+
+        ValidationResultDto? validationResult = null;
+        if (!string.IsNullOrEmpty(invoice.ValidationResult))
+        {
+            validationResult = JsonSerializer.Deserialize<ValidationResultDto>(invoice.ValidationResult);
+        }
+
+        return new InvoiceResponse
+        {
+            Id = invoice.Id,
+            InvoiceNumber = invoice.InvoiceNumber,
+            Status = invoice.Status,
+            StorecoveSubmissionId = invoice.StorecoveSubmissionId,
+            CreatedAt = invoice.CreatedAt,
+            ValidationResult = validationResult
+        };
     }
 }

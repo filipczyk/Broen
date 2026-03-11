@@ -14,6 +14,7 @@ public sealed class GetInvoiceXmlQueryHandler : IRequestHandler<GetInvoiceXmlQue
 
     public async Task<string?> Handle(GetInvoiceXmlQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var invoice = await _invoiceRepository.GetByIdAsync(request.InvoiceId, cancellationToken);
+        return invoice?.GeneratedXml;
     }
 }

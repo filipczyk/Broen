@@ -17,16 +17,18 @@ public sealed class FormatRepository : IFormatRepository
 
     public async Task<FormatVersion?> GetActiveFormatAsync(string countryCode, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
+        var sql = _queryLoader.Load("formats/get_active_format");
+        return await connection.QuerySingleOrDefaultAsync<FormatVersion>(sql, new { CountryCode = countryCode });
     }
 
     public async Task<IReadOnlyList<FormatRule>> GetRulesByFormatAsync(Guid formatVersionId, string ruleType, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return [];
     }
 
     public async Task<IReadOnlyList<CodeListEntry>> GetCodeListAsync(string listType, Guid? formatVersionId = null, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return [];
     }
 }

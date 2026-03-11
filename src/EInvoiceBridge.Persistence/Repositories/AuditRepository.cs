@@ -16,6 +16,16 @@ public sealed class AuditRepository : IAuditRepository
 
     public async Task InsertAuditEntryAsync(Guid invoiceId, string status, string? message = null, string? details = null, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
+        var sql = _queryLoader.Load("invoices/insert_audit_entry");
+        await connection.ExecuteAsync(sql, new
+        {
+            Id = Guid.NewGuid(),
+            InvoiceId = invoiceId,
+            Status = status,
+            Message = message,
+            Details = details,
+            CreatedAt = DateTime.UtcNow
+        });
     }
 }

@@ -1,4 +1,5 @@
 using EInvoiceBridge.Application.Commands.CreateInvoice;
+using EInvoiceBridge.Application.Commands.PreviewInvoice;
 using EInvoiceBridge.Application.Queries.GetInvoice;
 using EInvoiceBridge.Application.Queries.GetInvoiceStatus;
 using EInvoiceBridge.Application.Queries.GetInvoiceXml;
@@ -17,6 +18,15 @@ public sealed class InvoicesController : ControllerBase
     public InvoicesController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpPost("preview")]
+    [ProducesResponseType(typeof(InvoicePreviewResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Preview([FromBody] CreateInvoiceRequest request, CancellationToken cancellationToken)
+    {
+        var command = new PreviewInvoiceCommand(request);
+        var response = await _mediator.Send(command, cancellationToken);
+        return Ok(response);
     }
 
     [HttpPost]

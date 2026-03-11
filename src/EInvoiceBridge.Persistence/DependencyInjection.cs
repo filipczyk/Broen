@@ -10,6 +10,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPersistence(this IServiceCollection services, string connectionString, string queryBasePath)
     {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         services.AddSingleton<IDbConnectionFactory>(new NpgsqlConnectionFactory(connectionString));
         services.AddSingleton<IQueryLoader>(new EmbeddedQueryLoader(queryBasePath));
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
