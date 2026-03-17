@@ -18,6 +18,8 @@ public sealed class CreateInvoiceRequest
     public string? Notes { get; set; }
     public string? DeliveryDate { get; set; }
     public string? DeliveryCountryCode { get; set; }
+    public string? DeliveryCity { get; set; }
+    public string? DeliveryPostalCode { get; set; }
 }
 
 public sealed class PartyDto

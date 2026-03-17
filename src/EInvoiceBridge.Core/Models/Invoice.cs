@@ -17,6 +17,8 @@ public sealed class Invoice
     public string? Notes { get; set; }
     public DateOnly? DeliveryDate { get; set; }
     public string? DeliveryCountryCode { get; set; }
+    public string? DeliveryCity { get; set; }
+    public string? DeliveryPostalCode { get; set; }
 
     // DB-mapped fields
     public string Status { get; set; } = string.Empty;

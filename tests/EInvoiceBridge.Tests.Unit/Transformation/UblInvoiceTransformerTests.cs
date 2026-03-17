@@ -50,9 +50,10 @@ public class UblInvoiceTransformerTests
         var delivery = doc.Root!.Element(Cac + "Delivery");
         delivery.Should().NotBeNull();
         delivery!.Element(Cbc + "ActualDeliveryDate")!.Value.Should().Be("2026-03-08");
-        delivery.Element(Cac + "DeliveryLocation")!
-            .Element(Cac + "Address")!
-            .Element(Cac + "Country")!
+        var address = delivery.Element(Cac + "DeliveryLocation")!.Element(Cac + "Address")!;
+        address.Element(Cbc + "CityName")!.Value.Should().Be("Stuttgart");
+        address.Element(Cbc + "PostalZone")!.Value.Should().Be("70173");
+        address.Element(Cac + "Country")!
             .Element(Cbc + "IdentificationCode")!.Value.Should().Be("DE");
     }
 
@@ -62,6 +63,8 @@ public class UblInvoiceTransformerTests
         var invoice = InvoiceTestDataBuilder.CreateValidInvoice();
         invoice.DeliveryDate = null;
         invoice.DeliveryCountryCode = null;
+        invoice.DeliveryCity = null;
+        invoice.DeliveryPostalCode = null;
         // Tax category K triggers fallback
 
         var xml = await _sut.TransformToUblXmlAsync(invoice, DefaultFormatVersion);
@@ -71,9 +74,10 @@ public class UblInvoiceTransformerTests
         delivery.Should().NotBeNull("BR-IC-11/12 require Delivery for category K");
         delivery!.Element(Cbc + "ActualDeliveryDate")!.Value
             .Should().Be(invoice.IssueDate.ToString("yyyy-MM-dd"), "should fall back to IssueDate");
-        delivery.Element(Cac + "DeliveryLocation")!
-            .Element(Cac + "Address")!
-            .Element(Cac + "Country")!
+        var address = delivery.Element(Cac + "DeliveryLocation")!.Element(Cac + "Address")!;
+        address.Element(Cbc + "CityName")!.Value.Should().Be("Stuttgart", "should fall back to buyer city");
+        address.Element(Cbc + "PostalZone")!.Value.Should().Be("70173", "should fall back to buyer postal code");
+        address.Element(Cac + "Country")!
             .Element(Cbc + "IdentificationCode")!.Value
             .Should().Be("DE", "should fall back to buyer country");
     }

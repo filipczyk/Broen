@@ -38,7 +38,9 @@ public static class InvoiceMappingProfile
             TaxExemptionReason = request.TaxExemptionReason,
             Notes = request.Notes,
             DeliveryDate = request.DeliveryDate is not null ? DateOnly.Parse(request.DeliveryDate) : null,
-            DeliveryCountryCode = request.DeliveryCountryCode
+            DeliveryCountryCode = request.DeliveryCountryCode,
+            DeliveryCity = request.DeliveryCity,
+            DeliveryPostalCode = request.DeliveryPostalCode
         };
     }
 

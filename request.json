@@ -7,6 +7,8 @@
   "buyerReference": "PO-2026-1234",
   "deliveryDate": "2026-03-08",
   "deliveryCountryCode": "DE",
+  "deliveryCity": "Stuttgart",
+  "deliveryPostalCode": "70173",
   "seller": {
     "name": "Van Houten Industrial BV",
     "vatNumber": "BE0123456789",

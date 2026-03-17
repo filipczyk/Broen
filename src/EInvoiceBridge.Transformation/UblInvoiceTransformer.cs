@@ -121,11 +121,16 @@ public sealed class UblInvoiceTransformer : ITransformationService
 
         var deliveryDate = invoice.DeliveryDate ?? invoice.IssueDate;
         var countryCode = invoice.DeliveryCountryCode ?? invoice.Buyer.Address.CountryCode;
+        var city = invoice.DeliveryCity ?? invoice.Buyer.Address.City;
+        var postalCode = invoice.DeliveryPostalCode ?? invoice.Buyer.Address.PostalCode;
 
         return new XElement(Cac + "Delivery",
             new XElement(Cbc + "ActualDeliveryDate", deliveryDate.ToString("yyyy-MM-dd")),
             new XElement(Cac + "DeliveryLocation",
                 new XElement(Cac + "Address",
+                    new XElement(Cbc + "StreetName", invoice.Buyer.Address.Street),
+                    new XElement(Cbc + "CityName", city),
+                    new XElement(Cbc + "PostalZone", postalCode),
                     new XElement(Cac + "Country",
                         new XElement(Cbc + "IdentificationCode", countryCode)))));
     }
