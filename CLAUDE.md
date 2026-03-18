@@ -12,7 +12,10 @@ The full design specification lives in `docs/PEPPOL-CLAUDE_CODE_POC_INSTRUCTIONS
 
 - .NET 8, C#, ASP.NET Core Web API
 - PostgreSQL (via Docker Compose)
-- Entity Framework Core
+- Dapper + raw SQL (queries in `db/queries/`, migrations via Flyway)
+- Kafka (KRaft mode) for async event pipeline
+- Redis for caching (format versions, rules, code lists)
+- MediatR for CQRS in Application layer
 - No frontend — API-only POC
 - Single-tenant, API key auth only
 
@@ -20,15 +23,19 @@ The full design specification lives in `docs/PEPPOL-CLAUDE_CODE_POC_INSTRUCTIONS
 
 ```
 src/
-  EInvoiceBridge.Api/              # Web API (controllers, Program.cs)
-  EInvoiceBridge.Core/             # Domain models, DTOs, interfaces
-  EInvoiceBridge.Validation/       # Validation pipeline (rule-based)
+  EInvoiceBridge.Api/              # Web API (controllers, Program.cs) — DI root
+  EInvoiceBridge.Worker/           # Kafka consumer host (background processing)
+  EInvoiceBridge.Application/      # MediatR commands/queries (CQRS)
+  EInvoiceBridge.Core/             # Domain models, DTOs, interfaces (zero deps)
+  EInvoiceBridge.Validation/       # Validation pipeline (5 IValidationRule implementations)
   EInvoiceBridge.Transformation/   # UBL 2.1 XML generation via System.Xml.Linq
   EInvoiceBridge.Delivery/         # Storecove sandbox HTTP client
-  EInvoiceBridge.Persistence/      # EF Core + PostgreSQL
+  EInvoiceBridge.Persistence/      # Dapper + PostgreSQL (NpgsqlConnectionFactory)
+  EInvoiceBridge.Infrastructure/   # Kafka, Redis, Serilog, OpenTelemetry
 tests/
   EInvoiceBridge.Tests.Unit/
   EInvoiceBridge.Tests.Integration/
+  EInvoiceBridge.Tests.Architecture/
 ```
 
 ## Build & Run Commands
@@ -49,12 +56,11 @@ dotnet test tests/EInvoiceBridge.Tests.Unit
 # Run a specific test by filter
 dotnet test --filter "FullyQualifiedName~ArithmeticRule"
 
-# Docker Compose (API + PostgreSQL)
+# Docker Compose (API + Worker + PostgreSQL + Kafka + Redis + Flyway + Kafka UI)
 docker compose up --build
 
-# EF Core migrations
-dotnet ef migrations add <Name> --project src/EInvoiceBridge.Persistence --startup-project src/EInvoiceBridge.Api
-dotnet ef database update --project src/EInvoiceBridge.Persistence --startup-project src/EInvoiceBridge.Api
+# Flyway migrations (run automatically via Docker Compose)
+# Migration files: db/migration/V1__*.sql, V2__*.sql, V3__*.sql
 
 # User secrets for Storecove API key
 dotnet user-secrets set "Storecove:ApiKey" "<key>" --project src/EInvoiceBridge.Api
@@ -62,17 +68,22 @@ dotnet user-secrets set "Storecove:ApiKey" "<key>" --project src/EInvoiceBridge.
 
 ## Architecture & Pipeline
 
-The invoice processing flow is synchronous for the POC:
+The invoice processing flow is **asynchronous via Kafka**:
 
-1. **POST /api/invoices** receives `CreateInvoiceRequest` JSON (our canonical schema, not UBL)
-2. JSON is mapped to domain models (`Invoice`, `InvoiceLine`, `Party`, etc. in Core)
-3. **Validation pipeline** runs all `IValidationRule` implementations in sequence, aggregating errors/warnings. Rules: schema completeness, arithmetic, VAT logic (cross-border B2B), identifier format, XRechnung-specific
-4. **UBL 2.1 XML transformation** via `System.Xml.Linq` (XDocument/XElement) — never string concatenation. Output must conform to Peppol BIS Billing 3.0 + XRechnung CIUS
-5. **XSD validation** against UBL 2.1 schemas (stored locally under `Schemas/`)
-6. **Storecove delivery** — base64-encoded UBL XML submitted to `POST /api/v2/document_submissions`
-7. **Webhook** at `POST /api/webhooks/storecove` receives delivery status updates
+1. **POST /api/invoices** receives `CreateInvoiceRequest` JSON → publishes `InvoiceReceived` event
+2. **ValidationConsumer** picks up event → runs all `IValidationRule` implementations → publishes `InvoiceValidated` or `ValidationFailed`
+3. **TransformationConsumer** → UBL 2.1 XML via `System.Xml.Linq` (XDocument/XElement) → publishes `InvoiceTransformed`
+4. **DeliveryConsumer** → base64-encoded UBL XML submitted to Storecove `POST /api/v2/document_submissions` → publishes `InvoiceSent` or `InvoiceFailed`
+5. **StatusConsumer** → terminal status updates
+6. **Webhook** at `POST /api/webhooks/storecove` receives delivery status updates
+
+Kafka topics: `einvoice.invoice.*` (7 topics)
 
 Status progression: `Received → Validating → Valid/Invalid → Transforming → Sending → Sent → Delivered/Failed`
+
+Validation rules (executed in priority order): SchemaCompleteness → Arithmetic → VatLogic → IdentifierFormat → GermanBusiness
+
+UBL XML output must conform to Peppol BIS Billing 3.0 + XRechnung CIUS. XSD validation against locally stored schemas.
 
 ## Key Domain Rules
 
@@ -86,4 +97,4 @@ Status progression: `Received → Validating → Valid/Invalid → Transforming 
 
 Storecove settings in `appsettings.json` under `"Storecove"` key (BaseUrl, ApiKey, LegalEntityId, WebhookSecret). API keys must never be committed — use .NET User Secrets or environment variables.
 
-Docker Compose exposes: API on port 5000, PostgreSQL on port 5432.
+Docker Compose services: API (5000:8080), Worker, PostgreSQL (5432), Flyway (one-shot), Kafka (9092), Redis (6379), Kafka UI (8080).

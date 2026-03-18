@@ -7,7 +7,7 @@ public class ArithmeticRuleTests
 {
     private readonly ArithmeticRule _sut = new();
 
-    [Fact(Skip = "Stub — awaiting implementation")]
+    [Fact]
     public async Task ValidateAsync_WithCorrectArithmetic_ReturnsNoErrors()
     {
         var invoice = InvoiceTestDataBuilder.CreateValidInvoice();

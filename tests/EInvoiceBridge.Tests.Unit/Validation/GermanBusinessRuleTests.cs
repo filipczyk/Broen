@@ -7,7 +7,7 @@ public class GermanBusinessRuleTests
 {
     private readonly GermanBusinessRule _sut = new();
 
-    [Fact(Skip = "Stub — awaiting implementation")]
+    [Fact]
     public async Task ValidateAsync_WithBuyerReference_ReturnsNoErrors()
     {
         var invoice = InvoiceTestDataBuilder.CreateValidInvoice();
