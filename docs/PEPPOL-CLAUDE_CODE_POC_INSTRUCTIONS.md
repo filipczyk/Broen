@@ -1,5 +1,7 @@
 # E-Invoicing Bridge POC — Germany (XRechnung via Peppol)
 
+> **Note (2026-03-19):** This is the **original design specification** written before the Kafka async pipeline was implemented. The synchronous flow described in Section 7 has been replaced by an async Kafka-based pipeline with 4 consumers. For the current architecture, see [`docs/ARCHITECTURE.md`](ARCHITECTURE.md).
+
 ## Claude Code Instructions
 
 You are helping build a Proof of Concept for a cross-border B2B e-invoicing platform. This POC targets **Germany** as the first country and implements the full pipeline: API ingestion → validation → UBL 2.1 XML transformation → delivery via Storecove sandbox → status tracking.
@@ -489,6 +491,8 @@ dotnet user-secrets set "Storecove:ApiKey" "your-sandbox-api-key"
 
 ## 7. API Endpoints
 
+> **Note:** The synchronous flow described below has been replaced by an **async Kafka pipeline**. POST /api/invoices now returns 202 immediately after persisting and publishing an `InvoiceReceived` event. Validation, transformation, and delivery happen asynchronously via Worker consumers. See [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) Section 3 for the current flow.
+
 ### POST /api/invoices
 
 Accepts a `CreateInvoiceRequest` JSON body. Returns the created invoice with its ID and initial status.
@@ -541,6 +545,8 @@ Receives Storecove delivery status webhooks. Updates the invoice status in the d
 
 ## 8. Docker Compose Setup
 
+> **Note:** The actual Docker Compose setup has expanded beyond this original spec to include 7 services: API, Worker, PostgreSQL, Flyway (one-shot migrations), Kafka (KRaft mode), Redis, and Kafka UI. See [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) Section 12 and the `docker-compose.yml` at repo root.
+
 ```yaml
 version: '3.8'
 services:
@@ -576,6 +582,8 @@ volumes:
 ---
 
 ## 9. Implementation Order
+
+> **Note:** All 5 phases below are complete. The implementation diverged from this spec in several ways (Dapper instead of EF Core, Kafka async pipeline instead of synchronous processing, Flyway instead of EF migrations). See [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) for the current architecture.
 
 Build in this sequence. Each phase should compile, run, and be testable before moving on.
 

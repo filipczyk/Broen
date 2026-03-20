@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Broen** (Danish for "bridge") is a Proof of Concept for a cross-border B2B e-invoicing platform. It targets **Germany** as the first country, implementing: API ingestion → validation → UBL 2.1 XML transformation → delivery via Storecove sandbox → status tracking.
 
-The full design specification lives in `docs/PEPPOL-CLAUDE_CODE_POC_INSTRUCTIONS.md` — read it before implementing any feature.
+The comprehensive architecture reference is `docs/ARCHITECTURE.md`. The original design specification (pre-Kafka) lives in `docs/PEPPOL-CLAUDE_CODE_POC_INSTRUCTIONS.md`.
 
 ## Tech Stack
 
@@ -25,12 +25,12 @@ The full design specification lives in `docs/PEPPOL-CLAUDE_CODE_POC_INSTRUCTIONS
 src/
   EInvoiceBridge.Api/              # Web API (controllers, Program.cs) — DI root
   EInvoiceBridge.Worker/           # Kafka consumer host (background processing)
-  EInvoiceBridge.Application/      # MediatR commands/queries (CQRS)
+  EInvoiceBridge.Application/      # MediatR commands/queries (CQRS), InvoiceReconstructor helper
   EInvoiceBridge.Core/             # Domain models, DTOs, interfaces (zero deps)
   EInvoiceBridge.Validation/       # Validation pipeline (5 IValidationRule implementations)
   EInvoiceBridge.Transformation/   # UBL 2.1 XML generation via System.Xml.Linq
   EInvoiceBridge.Delivery/         # Storecove sandbox HTTP client
-  EInvoiceBridge.Persistence/      # Dapper + PostgreSQL (NpgsqlConnectionFactory)
+  EInvoiceBridge.Persistence/      # Dapper + PostgreSQL (NpgsqlConnectionFactory, GetQueryBasePath() for SQL loading)
   EInvoiceBridge.Infrastructure/   # Kafka, Redis, Serilog, OpenTelemetry
 tests/
   EInvoiceBridge.Tests.Unit/

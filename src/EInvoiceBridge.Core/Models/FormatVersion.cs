@@ -10,7 +10,7 @@ public sealed class FormatVersion
     public string? CustomizationId { get; set; }
     public string? ProfileId { get; set; }
     public string Status { get; set; } = "draft";
-    public DateOnly? EffectiveFrom { get; set; }
-    public DateOnly? EffectiveUntil { get; set; }
+    public DateTime? EffectiveFrom { get; set; }
+    public DateTime? EffectiveUntil { get; set; }
     public string? SchemaPath { get; set; }
 }

@@ -25,7 +25,7 @@ builder.Services.AddDelivery(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(
     builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."),
-    Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "db", "queries"));
+    GetQueryBasePath());
 
 // Consumers
 builder.Services.AddHostedService<InvoiceValidationConsumer>();
@@ -35,3 +35,12 @@ builder.Services.AddHostedService<InvoiceStatusConsumer>();
 
 var host = builder.Build();
 host.Run();
+
+static string GetQueryBasePath()
+{
+    var dockerPath = Path.Combine(AppContext.BaseDirectory, "db", "queries");
+    if (Directory.Exists(dockerPath))
+        return dockerPath;
+
+    return Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "db", "queries");
+}

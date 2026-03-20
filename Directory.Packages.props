@@ -30,6 +30,7 @@
 
     <!-- DI Abstractions -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
 
     <!-- Delivery -->
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.1" />

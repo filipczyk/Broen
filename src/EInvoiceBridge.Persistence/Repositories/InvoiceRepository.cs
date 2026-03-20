@@ -61,4 +61,11 @@ public sealed class InvoiceRepository : IInvoiceRepository
             UpdatedAt = DateTime.UtcNow
         });
     }
+
+    public async Task<Invoice?> GetBySubmissionIdAsync(string submissionId, CancellationToken cancellationToken = default)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
+        var sql = _queryLoader.Load("invoices/get_by_submission_id");
+        return await connection.QuerySingleOrDefaultAsync<Invoice>(sql, new { SubmissionId = submissionId });
+    }
 }

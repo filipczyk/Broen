@@ -3,7 +3,11 @@
     "allow": [
       "Bash(dotnet:*)",
       "Bash(docker compose:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(find:*)",
+      "Bash(timeout:*)",
+      "Bash(sleep:*)",
+      "Bash(curl:*)"
     ]
   }
 }

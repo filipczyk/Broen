@@ -57,7 +57,7 @@ builder.Services.AddDelivery(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPersistence(
     builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."),
-    Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "db", "queries"));
+    GetQueryBasePath());
 
 // OpenTelemetry
 builder.Services.AddOpenTelemetryDefaults("EInvoiceBridge.Api");
@@ -81,6 +81,17 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+static string GetQueryBasePath()
+{
+    // In Docker, queries are copied to /app/db/queries
+    var dockerPath = Path.Combine(AppContext.BaseDirectory, "db", "queries");
+    if (Directory.Exists(dockerPath))
+        return dockerPath;
+
+    // Local development: navigate up from bin/Debug/net8.0
+    return Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "db", "queries");
+}
 
 namespace EInvoiceBridge.Api
 {

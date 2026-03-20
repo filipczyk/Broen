@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\src\EInvoiceBridge.Validation\EInvoiceBridge.Validation.csproj" />
     <ProjectReference Include="..\..\src\EInvoiceBridge.Transformation\EInvoiceBridge.Transformation.csproj" />
     <ProjectReference Include="..\..\src\EInvoiceBridge.Delivery\EInvoiceBridge.Delivery.csproj" />
+    <ProjectReference Include="..\..\src\EInvoiceBridge.Infrastructure\EInvoiceBridge.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
